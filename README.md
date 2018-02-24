@@ -8,6 +8,6 @@ steps to use:
 
 2. createQueue(int maxSize) - maxSize is how many elements max does this queue hold.
 
-3. enqueue/dequeue
+3. enqueue/dequeue/count
 
 4. freeQueue(q)
