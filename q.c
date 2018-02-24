@@ -1,10 +1,8 @@
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-// max size of a string is 255, the "+1" is for termination character
-#define MAX_ELEMENT_SIZE 255 + 1
+#define MAX_ELEMENT_SIZE 50 + 1
 
 typedef struct queueStru {
 	_Atomic unsigned int head;
@@ -17,7 +15,7 @@ queue* createQueue(int maxSize) {
 	queue* q = (queue*)malloc(sizeof(queue));
 	q->head = 0, q->tail = 0;
 	q->maxSize = maxSize + 1;
-	unsigned int charArrSize = maxSize * MAX_ELEMENT_SIZE;
+	unsigned int charArrSize = q->maxSize * MAX_ELEMENT_SIZE;
 	q->elements = (char*)malloc(charArrSize);
 	memset(q->elements, 0, charArrSize);
 
@@ -35,6 +33,7 @@ int enqueue(queue* q, char* element) {
 		return -1;
 	}
 
+	memset(&q->elements[q->tail * MAX_ELEMENT_SIZE], 0, MAX_ELEMENT_SIZE);
 	strncpy(&q->elements[q->tail * MAX_ELEMENT_SIZE], element, MAX_ELEMENT_SIZE);
 
 	q->tail = nextTail;
@@ -51,42 +50,50 @@ char* dequeue(queue* q) {
 	return &q->elements[head * MAX_ELEMENT_SIZE];
 }
 
+unsigned int count(queue* q) {
+	if (q->head <= q->tail) {
+		return q->tail - q->head;
+	} else {
+		return q->maxSize - (q->head - q->tail);
+	}
+}
+
 int main() {
 	int ret;
 	char* msg;
 
-	//create a queue, that can have a maximum of 3 elements
 	queue* q = createQueue(3);
 
-	//take an element off the queue, in this case, the queue is empty, it will return NULL
 	msg = dequeue(q);
-	printf("dequeue: %s\n", msg);
+	printf("dequeue: %s, count: %d\n", msg, count(q));
 
-	//add an element to the queue, return 1 means success, return -1 means fail.
 	ret = enqueue(q, "first message");
-	printf("enqueue: %d\n", ret);
+	printf("enqueue: %d, count: %d\n", ret, count(q));
 
 	ret = enqueue(q, "second message");
-	printf("enqueue: %d\n", ret);
+	printf("enqueue: %d, count: %d\n", ret, count(q));
 
 	ret = enqueue(q, "third message");
-	printf("enqueue: %d\n", ret);
+	printf("enqueue: %d, count: %d\n", ret, count(q));
 
 	ret = enqueue(q, "fourth message");
-	printf("enqueue: %d\n", ret);
+	printf("enqueue: %d, count: %d\n", ret, count(q));
 
 	msg = dequeue(q);
-	printf("dequeue: %s\n", msg);
+	printf("dequeue: %s, count: %d\n", msg, count(q));
 
 	msg = dequeue(q);
-	printf("dequeue: %s\n", msg);
+	printf("dequeue: %s, count: %d\n", msg, count(q));
+
+	ret = enqueue(q, "fifth message");
+	printf("enqueue: %d, count: %d\n", ret, count(q));
 
 	msg = dequeue(q);
-	printf("dequeue: %s\n", msg);
+	printf("dequeue: %s, count: %d\n", msg, count(q));
 
 	msg = dequeue(q);
-	printf("dequeue: %s\n", msg);
+	printf("dequeue: %s, count: %d\n", msg, count(q));
 
 	msg = dequeue(q);
-	printf("dequeue: %s\n", msg);
+	printf("dequeue: %s, count: %d\n", msg, count(q));
 }
