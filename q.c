@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+// max size of a string is 255, the "+1" is for termination character
 #define MAX_ELEMENT_SIZE 255 + 1
 
 typedef struct queueStru {
@@ -54,11 +55,14 @@ int main() {
 	int ret;
 	char* msg;
 
+	//create a queue, that can have a maximum of 3 elements
 	queue* q = createQueue(3);
 
+	//take an element off the queue, in this case, the queue is empty, it will return NULL
 	msg = dequeue(q);
 	printf("dequeue: %s\n", msg);
 
+	//add an element to the queue, return 1 means success, return -1 means fail.
 	ret = enqueue(q, "first message");
 	printf("enqueue: %d\n", ret);
 
